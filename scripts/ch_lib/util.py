@@ -52,7 +52,7 @@ def gen_file_sha256(filname):
 def download_file(url, path):
     printD("Downloading file from: " + url)
     # get file
-    r = requests.get(url, stream=True, headers=def_headers, proxies=proxies)
+    r = requests.get(url, stream=True, headers=def_headers, proxies=proxies, verify=False)
     if not r.ok:
         printD("Get error code: " + str(r.status_code))
         printD(r.text)
