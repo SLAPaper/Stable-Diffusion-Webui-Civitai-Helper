@@ -29,9 +29,10 @@ folders = {
     "hyper": os.path.join(root_path, "models", "hypernetworks"),
     "ckp": os.path.join(root_path, "models", "Stable-diffusion"),
     "lora": os.path.join(root_path, "models", "Lora"),
+    "unet": os.path.join(root_path, "models", "unet"),
 }
 
-exts = (".bin", ".pt", ".safetensors", ".ckpt")
+exts = (".bin", ".pt", ".safetensors", ".ckpt", ".gguf")
 info_ext = ".info"
 vae_suffix = ".vae"
 
@@ -54,6 +55,8 @@ def get_custom_model_folder():
     if shared.cmd_opts.lora_dir and os.path.isdir(shared.cmd_opts.lora_dir):
         folders["lora"] = shared.cmd_opts.lora_dir
 
+    if shared.cmd_opts.unet_dir and os.path.isdir(shared.cmd_opts.unet_dir):
+        folders["unet"] = shared.cmd_opts.unet_dir
 
 
 
@@ -141,13 +144,13 @@ def get_model_path_by_search_term(model_type:str, search_term:str):
         return
     
     # for lora: search_term = subfolderpath + model name + ext + " " + hash. And it always start with a / even there is no sub folder
-    # for ckp: search_term = subfolderpath + model name + ext + " " + hash
+    # for ckp&unet: search_term = subfolderpath + model name + ext + " " + hash
     # for ti: search_term = subfolderpath + model name + ext + " " + hash
     # for hyper: search_term = subfolderpath + model name
     has_hash = True
     if model_type == "hyper":
         has_hash = False
-    elif search_term.endswith(".pt") or search_term.endswith(".bin") or search_term.endswith(".safetensors") or search_term.endswith(".ckpt"):
+    elif any(search_term.endswith(ext) for ext in [".pt", ".bin", ".safetensors", ".ckpt", ".gguf"]):
         has_hash = False
 
     # remove hash
@@ -171,6 +174,8 @@ def get_model_path_by_search_term(model_type:str, search_term:str):
         model_folder_name = "hypernetworks"
     elif model_type == "ckp":
         model_folder_name = "Stable-diffusion"
+    elif model_type == "unet":
+        model_folder_name = "unet"
     else:
         model_folder_name = "Lora"
 

@@ -24,6 +24,7 @@ model_type_dict = {
     "Hypernetwork": "hyper",
     "LORA": "lora",
     "LoCon": "lora",
+    "UNet": "unet",
 }
 
 
